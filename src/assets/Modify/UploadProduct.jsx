@@ -1,161 +1,173 @@
-/* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from "react";
-import { ArrowRightCircleFill } from "react-bootstrap-icons";
-import Modal from "@mui/material/Modal";
-// import Box from "@mui/material/Box";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
+import React, { useEffect, useRef, useState } from "react";
+import { CloudArrowUpFill } from "react-bootstrap-icons";
+// import { Arrow } from "@heroicons/react";
+import dayjs from "dayjs";
+// import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import GlobalApi from "../../api/GlobalApi";
 import { useNavigate } from "react-router-dom";
+// import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+// import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
+import ModImage2 from ".././HomeScreen/Images/modify_image3.jpg";
+import useDrivePicker from "react-google-drive-picker";
 
-export default function AddressCart({ quantity }) {
+export default function UploadProduct() {
   const navigate = useNavigate();
+  const inputRef = useRef(null);
+  const [image, setImage] = useState();
 
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const user = JSON.parse(localStorage.getItem("user-info"));
-  const user_id = user.id;
-  const [Getaddress, setGetAddress] = useState([]);
-
-  const [mainAddressId, setMainAddressId] = useState();
-  const [mainAddress, setMainAddress] = useState();
-
-  // const [item, setItem] = useState();
-
-  const [name, setName] = useState("");
+  const [productName, setProductName] = useState("");
+  const [productDetail, setProductDetail] = useState("");
+  const [productChangeDetail, setProductChangeDetail] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState(0);
-  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [purchaseDate, setPurchaseDate] = useState(dayjs("2022-04-17"));
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
-  const [pin, setPinCode] = useState(0);
+  const [pin, setPinCode] = useState("");
 
-  const [cart, setCart] = useState([]);
-
-  const GetAddress = async (e) => {
-    // e.preventDefault();
-    let a = { user_id };
-    console.log(typeof a);
-    try {
-      let req = await fetch("http://127.0.0.1:8000/api/adr", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Accept: "application/json",
-        },
-        body: JSON.stringify(a),
-      });
-      let result = await req.json();
-      console.log("result", result);
-      setGetAddress(result);
-      setMainAddressId(result[0].id);
-      setMainAddress(result[0]);
-      // localStorage.setItem("user-info", JSON.stringify(result));
-    } catch (e) {
-      console.log(e);
-    }
+  const [openPicker, authResponse] = useDrivePicker();
+  // const customViewsArray = [new google.picker.DocsView()]; // custom view
+  const handleOpenPicker = () => {
+    openPicker({
+      clientId:
+        "979027160023-tq1r8dl9rngglb704ac0njm9va09he7i.apps.googleusercontent.com",
+      developerKey: "AIzaSyBFhRBY1Df8UbbtFSfZ6HSaR0ROJN4iwmY",
+      viewId: "DOCS",
+      token:
+        "ya29.a0AXooCgv8bMOB79GVubhvonxrawkH411xQkCqj-vdPy-i_FBsVT8waTp_eCU9C5h7T5YhQgdWoRPrCRBbwM8TJB_LNJoUWcSL3UQ1r5HC6Vpt_w8i2UA6chA7UKJjbwkYtQyoMWJeBBrYUUJwAxE-qJAQ0CWjkwvOUomQaCgYKAWwSARESFQHGX2MiWNU8EoQll2mMqc3Wj_g39Q0171", // pass oauth token in case you already have one
+      showUploadView: true,
+      showUploadFolders: true,
+      supportDrives: true,
+      multiselect: true,
+      // customViews: customViewsArray, // custom view
+      callbackFunction: (data) => {
+        if (data.action === "cancel") {
+          console.log("User clicked cancel/close button");
+        }
+        console.log(data.docs[0].url);
+        setImage(data.docs[0].url);
+      },
+    });
   };
 
-  const userid = JSON.parse(localStorage.getItem("user-info"));
-  const data = {
-    userId: userid.id,
+  // useEffect(() => {
+  //   if (data) {
+  //     data.docs
+  //   }
+  // },[data])
+
+  const handleUpload = () => {
+    inputRef.current.click();
   };
 
-  // const GetCart = () => {
-  //   GlobalApi.GetCart(data)
-  //     .then((res) => {
-  //       // setLoading(false);
-  //       setCart(res?.carts);
-  //       console.log("address", res?.carts, res?.carts[0].quantity);
-  //       // setCount(res?.carts.length);
-  //     })
-  //     .then(() => {
-  //       // setLoading(true);
-  //     });
-  // };
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    console.log(file);
+    setImage(URL.createObjectURL(file));
+    console.log(URL.createObjectURL(file));
+  };
 
-  // const total_cal = () => {
-  //   let total = 0;
-  //   let totalQuantity = 0;
-  //   cart.map((e) => {
-  //     total = total + e.products[0].price + e.quantity;
-  //     totalQuantity = totalQuantity + e.quantity;
-  //   });
-  //   // setItem(totalQuantity);
-  //   return total;
-  // };
-  // const total_qu = () => {
-  //   let totalQuantity = 0;
-  //   cart.map((e) => {
-  //     // total = total + e.products[0].price + e.quantity;
-  //     totalQuantity = totalQuantity + e.quantity;
-  //   });
-  //   // setItem(totalQuantity);
-  //   return totalQuantity;
+  const userid = JSON.parse(localStorage.getItem("user-info")).id;
+  // const data = {
+  //   userId: userid.id,
   // };
 
   const formSubmit = async () => {
+    let a = {
+      productName: productName,
+      phone: phone,
+      country: country,
+      productDetail: productDetail,
+      productChangeDetail: productChangeDetail,
+      city: city,
+      state: state,
+      pin: pin,
+      userid: userid,
+      purchaseDate: purchaseDate.toISOString(),
+      image: image,
+      email: email,
+    };
     if (
-      name !== "" &&
-      phone !== 0 &&
+      productName !== "" &&
+      phone !== "" &&
       country !== "" &&
-      address !== "" &&
+      productChangeDetail !== "" &&
+      productDetail !== "" &&
       city !== "" &&
+      purchaseDate !== "" &&
       state !== "" &&
-      pin !== 0
+      pin !== "" &&
+      email !== "" &&
+      image != null
     ) {
-      let a = { name, phone, country, address, city, state, pin, user_id };
-      console.log(typeof phone);
-      console.log(JSON.stringify(a));
-      try {
-        let req = await fetch("http://127.0.0.1:8000/api/address", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(a),
-        });
-        let result = await req.json();
-        console.log("result", result);
-        GetAddress();
-        // setGetAddress(result);
-        // localStorage.setItem("user-info", JSON.stringify(result));
-      } catch (e) {
-        console.log(e);
-      }
-      setOpen(false);
-      setName("");
-      setAddress("");
+      //  console.log(typeof phone);
+      console.log(a);
+
+      GlobalApi.RequestModify(a).then((res) => {
+        console.log(res);
+        navigate("/Ecommerce-project/Modify/Status");
+      });
+
+      //  setOpen(false);
+      setProductName("");
+      setProductChangeDetail("");
+      setProductDetail("");
       setEmail("");
-      setPhone();
+      setPhone("");
+      setPurchaseDate(dayjs("2022-04-17"));
       setCity("");
       setCountry("");
-      setPinCode();
+      setPinCode("");
+      setState("");
     }
   };
 
-  useEffect(() => {
-    GetAddress();
-    // GetCart();
-  }, []);
-
   return (
-    <div className="bg-[#f0fffe] p-4 w-1/4 h-fit">
-      {/* address */}
-      <Modal
-        open={open}
-        // onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        className="border-b border-gray-900/10 flex justify-center"
+    <div style={{ background: "#ffffff66" }}>
+      <div
+        className="flex gap-4 justify-center "
+        style={{
+          background: `url(${ModImage2})`,
+          backgroundPosition: "33% 19%",
+
+          // backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+        }}
       >
-        <div className="min-h-screen p-6  flex items-center justify-center">
+        <div
+          onClick={() => handleOpenPicker()}
+          className="mx-60 my-4 flex justify-center bg-[#ffffffc2] items-center flex-col w-full border p-8 border-cyan-800"
+        >
+          <div className="flex w-20 h-20 justify-center">
+            {image ? (
+              <img src={image} className="w-full" alt="" />
+            ) : (
+              <CloudArrowUpFill style={{ fontSize: 50, color: "#214f8f" }} />
+            )}
+          </div>
+          <div className="flex justify-center">
+            <button
+              className="inline-block rounded bg-indigo-500 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-indigo-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-indigo-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              style={{ color: "white" }}
+            >
+              Select a file
+            </button>
+            <input
+              type="file"
+              // ref={inputRef}
+              // onChange={handleFile}
+              className="hidden"
+            />
+          </div>
+        </div>
+      </div>
+      <div>
+        <div className=" p-6  flex items-center justify-center">
           <div className="container  mx-auto">
             <div>
               <div className="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
@@ -163,14 +175,14 @@ export default function AddressCart({ quantity }) {
                 <div className="lg:col-span-2">
                   <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
                     <div className="md:col-span-3">
-                      <label htmlFor="full_name">Full Name</label>
+                      <label htmlFor="full_name">Product Name</label>
                       <input
                         type="text"
                         name="full_name"
                         id="full_name"
                         className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={productName}
+                        onChange={(e) => setProductName(e.target.value)}
                         required
                       />
                     </div>
@@ -203,14 +215,17 @@ export default function AddressCart({ quantity }) {
                     </div>
 
                     <div className="md:col-span-3">
-                      <label htmlFor="address">Address / Street</label>
-                      <input
-                        type="text"
-                        name="address"
-                        id="address"
+                      <label htmlFor="details">
+                        Product Details / Specifications
+                      </label>
+                      <textarea
+                        name="details"
+                        id="details"
+                        rows={2}
+                        cols={2}
                         className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
+                        value={productDetail}
+                        onChange={(e) => setProductDetail(e.target.value)}
                         placeholder=""
                         required
                       />
@@ -228,6 +243,43 @@ export default function AddressCart({ quantity }) {
                         placeholder=""
                         required
                       />
+                    </div>
+                    <div className="md:col-span-3">
+                      <label htmlFor="details">
+                        Changes you want in your Product
+                      </label>
+                      <textarea
+                        name="details"
+                        id="details"
+                        rows={2}
+                        cols={2}
+                        className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                        value={productChangeDetail}
+                        onChange={(e) => setProductChangeDetail(e.target.value)}
+                        placeholder=""
+                        required
+                      />
+                    </div>
+
+                    <div className="md:col-span-2 flex flex-col gap-1">
+                      <label htmlFor="">Purchase date</label>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <MobileDatePicker
+                          slotProps={{ textField: { size: "small" } }}
+                          sx={{
+                            color: "#ad1457",
+                            borderRadius: "3px",
+
+                            borderColor: "#f9fafb",
+                            border: "0px",
+
+                            backgroundColor: "#f9fafb",
+                          }}
+                          value={purchaseDate}
+                          onChange={(e) => setPurchaseDate(e)}
+                          // defaultValue={dayjs("2022-04-17")}
+                        />
+                      </LocalizationProvider>
                     </div>
 
                     <div className="md:col-span-2">
@@ -343,12 +395,6 @@ export default function AddressCart({ quantity }) {
                     <div className="md:col-span-5 text-right">
                       <div className="inline-flex gap-3 items-end">
                         <button
-                          onClick={handleClose}
-                          className=" font-bold py-2 px-4 rounded"
-                        >
-                          Close
-                        </button>
-                        <button
                           onClick={formSubmit}
                           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                         >
@@ -363,97 +409,7 @@ export default function AddressCart({ quantity }) {
             </div>
           </div>
         </div>
-      </Modal>
-      <div className="w-full flex flex-col  my-2 items-center justify-center">
-        <div className="block w-full m-2 bg-white p-1">
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="demo-controlled-radio-buttons-group"
-              name="controlled-radio-buttons-group"
-
-              // onChange={handleChange}
-            >
-              {Getaddress.map((i) => (
-                <div key={i.id} className="relative mb-2 flex items-center">
-                  <Radio
-                    checked={mainAddressId === i.id}
-                    value={i}
-                    onChange={() => {
-                      setMainAddressId(i.id);
-                      setMainAddress(i);
-                    }}
-                  />
-                  <div>
-                    <button className="absolute right-1 top-1 p-1 px-3 bg-slate-100 rounded-sm">
-                      Edit
-                    </button>
-                    <span className="text-xl font-semibold mr-1">{i.name}</span>
-                    <span className="text-sm text-gray-500">{i.phone}</span>
-                    <br />
-                    <span>{i.address},</span>
-                    <span>{i.city},</span>
-                    <span>{i.state},</span>
-                    <span>{i.country},</span>
-                    <hr
-                      className="my-1"
-                      style={{ height: "2px", background: "azure" }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </div>
-        <button
-          onClick={handleOpen}
-          type="button"
-          className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 text-center dark:border-gray-700"
-        >
-          + Add Address
-        </button>
-      </div>
-
-      {/* <div className="my-4 bg-slate-200 p-4">
-        <h2 className="text-2xl font-semibold">Price Details</h2>
-        <hr className="my-4" style={{ height: "2px", background: "azure" }} />
-        <div className="text-lg font-medium justify-between flex">
-          <span>Price ({total_qu()} items)</span>
-          <span>${total_cal()}</span>
-        </div>
-        <div className="text-lg font-medium justify-between flex">
-          <span>Delivery Charges</span>
-          <span>
-            <strike className="text-gray-700">40</strike>{" "}
-            <span className="text-green-600">Free</span>{" "}
-          </span>
-        </div>
-        <hr className="my-4" style={{ height: "2px", background: "azure" }} />
-        <div className="text-xl font-medium justify-between flex">
-          <span>Total Payable</span>
-          <span>${total_cal()}</span>
-        </div>
-        <hr className="my-4" style={{ height: "2px", background: "azure" }} />
-      </div> */}
-
-      <div className="w-full flex items-center justify-center">
-        <button
-          disabled={Getaddress.length == 0}
-          onClick={() =>
-            navigate("/Ecommerce-project/Cart/Checkout", {
-              state: mainAddress,
-            })
-          }
-          className="flex items-center hover:bg-slate-300 p-4 gap-3 justify-center text-xl font-medium bg-slate-50 "
-          style={{
-            boxShadow:
-              "rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px",
-          }}
-        >
-          Place Order <ArrowRightCircleFill size={30} />
-        </button>
       </div>
     </div>
   );
 }
-
-/**box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px; */

@@ -8,6 +8,7 @@ import Items from "./ItemSection/Items";
 import MainFooter from "../Footer/MainFooter";
 import ChatSection from "../Chat/ChatSection";
 import Brand from "./BrandSection/Brand";
+import ProductShow from "./ProductShow/ProductShow";
 
 export default function HomeScreen() {
   return (
@@ -19,6 +20,7 @@ export default function HomeScreen() {
       <Brand />
       <Items />
       <CategorySection />
+      <ProductShow />
 
       <MainFooter />
       <ChatSection />

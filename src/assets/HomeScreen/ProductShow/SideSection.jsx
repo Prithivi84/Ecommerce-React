@@ -15,7 +15,7 @@ import GlobalApi from "../../../api/GlobalApi";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
-export default function ProductsSection({ ...details }) {
+export default function SideSection({ ...details }) {
   const navigate = useNavigate();
 
   const [value, setValue] = React.useState(0);
@@ -114,8 +114,15 @@ export default function ProductsSection({ ...details }) {
     }
   };
 
+  // const GetProduct = () => {
+  //     GlobalApi.GetProducts("", "").then((res) => {
+  //         console.log(res);
+  //         data.productId=res.
+  //     })
+  // }
+
   useEffect(() => {
-    console.log("product ", details.details.id);
+    //    console.log("product ", details.details.id);
     GetBooking();
     GetCart();
     console.log(data.productId);
@@ -132,88 +139,100 @@ export default function ProductsSection({ ...details }) {
   }, []);
 
   return (
-    loading && (
-      <div className="my-4 cursor-pointer">
-        <div
-          className="w-full max-w-64 bg-white border hover:scale-110 transition duration-700 ease-in-out border-gray-200 rounded-lg shadow"
-          style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px" }}
-        >
+    <div className="flex">
+      <div>
+        <div className="my-4 cursor-pointer">
           <div
-            className="flex justify-center p-1 items-center"
-            style={{ height: "16rem", position: "relative" }}
+            className="w-full max-w-80 bg-white border hover:scale-110 transition duration-700 ease-in-out border-gray-200 rounded-lg shadow"
+            style={{
+              boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+            }}
           >
-            <Checkbox
-              checked={checked}
-              onChange={handelChange}
-              style={{ position: "absolute", top: 6, right: 6, scale: 1.5 }}
-              icon={<FavoriteBorder />}
-              checkedIcon={<Favorite sx={{ color: red[500] }} />}
-            />
-            <img
-              className="object-cover  "
-              style={{ height: "-webkit-fill-available" }}
-              src={details.details.productImage.url}
-              alt=""
-            />
-          </div>
-          <div className="px-5 pb-5">
             <div
-              onClick={() =>
-                navigate("/Ecommerce-project/Products/Detail", {
-                  state: details.details,
-                })
-              }
+              className="flex justify-center p-4 items-center"
+              style={{ height: "16rem", position: "relative" }}
             >
-              <h5 className="text-xl font-semibold tracking-tight text-gray-900">
-                {details.details.name.slice(0, 30)}
-                ...
-              </h5>
-            </div>
-            <div className="flex items-center mt-2.5 mb-5">
-              <Rating
-                name="simple-controlled"
-                value={value}
-                color="white"
-                onChange={(event, newValue) => {
-                  setValue(newValue);
-                }}
-              />
-
-              <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">
-                {value} ★
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center m-2 mx-4 justify-between">
-            <span className="text-3xl font-bold text-gray-900 ">
-              ₹ {details.details.price}
-            </span>
-            <div className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 flex gap-1 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-1 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-              {" "}
               <Checkbox
-                checked={cartChecked}
-                onChange={handelCart}
-                icon={
-                  <ShoppingCartOutlinedIcon
-                    style={{ color: "white", height: 25, width: "auto" }}
-                  />
-                }
-                checkedIcon={
-                  <ShoppingCartIcon
-                    sx={{ color: "white" }}
-                    style={{ color: "white", height: 25, width: "auto" }}
-                  />
-                }
+                checked={checked}
+                onChange={handelChange}
+                style={{
+                  position: "absolute",
+                  top: 6,
+                  right: 6,
+                  scale: 1.5,
+                }}
+                icon={<FavoriteBorder />}
+                checkedIcon={<Favorite sx={{ color: red[500] }} />}
               />
+              <img
+                className="object-cover"
+                style={{ height: "-webkit-fill-available" }}
+                src={details.details.productImage.url}
+                alt=""
+              />
+            </div>
+            <div className="px-5 pb-5">
+              <div
+                onClick={() =>
+                  navigate("/Ecommerce-project/Products/Detail", {
+                    state: details.details,
+                  })
+                }
+              >
+                <h5 className="text-xl font-semibold tracking-tight text-gray-900">
+                  {details.details.name.slice(0, 25)}
+                  ...
+                </h5>
+              </div>
+              <div className="flex items-center mt-2.5 mb-5">
+                <Rating
+                  name="simple-controlled"
+                  value={value}
+                  color="white"
+                  onChange={(event, newValue) => {
+                    setValue(newValue);
+                  }}
+                />
+
+                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">
+                  {value} ★
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center m-2 mx-4 justify-between">
+              <span className="text-3xl font-bold text-gray-900 ">
+                ₹ {details.details.price}
+              </span>
+              <div className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 flex gap-1 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-1 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                {" "}
+                <Checkbox
+                  checked={cartChecked}
+                  onChange={handelCart}
+                  icon={
+                    <ShoppingCartOutlinedIcon
+                      style={{
+                        color: "white",
+                        height: 25,
+                        width: "auto",
+                      }}
+                    />
+                  }
+                  checkedIcon={
+                    <ShoppingCartIcon
+                      sx={{ color: "white" }}
+                      style={{
+                        color: "white",
+                        height: 25,
+                        width: "auto",
+                      }}
+                    />
+                  }
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    )
+    </div>
   );
 }
-
-ProductsSection.propTypes = {
-  details: PropTypes.any,
-};
-/*box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; */

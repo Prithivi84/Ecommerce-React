@@ -6,9 +6,7 @@ export default function NavSection() {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
-  const handelChange = () => {
-    navigate("/Products", { state: search });
-  };
+  const keyword = { keyword: search, name: "" };
 
   return (
     <>
@@ -19,7 +17,7 @@ export default function NavSection() {
             "rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px",
         }}
       >
-        <div className="logo">
+        <div className="logo" onClick={() => navigate("/Ecommerce-project/")}>
           <img src="https://img.logoipsum.com/244.svg" alt="Logo" />
         </div>
         <form className="flex gap-2">
@@ -30,16 +28,14 @@ export default function NavSection() {
             className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             placeholder="Search.."
           />
-          <select>
-            <option value="All Categories">All Categories</option>
-            <option value="Cate1">Cate1</option>
-            <option value="Cate2">Cate2</option>
-            <option value="Cate3">Cate3</option>
-            <option value="Cate4">Cate4</option>
-          </select>
+
           <button
             type="submit"
-            onClick={handelChange}
+            onClick={() =>
+              navigate("/Ecommerce-project/Products", {
+                state: keyword,
+              })
+            }
             className="inline-block rounded bg-indigo-500 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-indigo-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-indigo-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             style={{ color: "white" }}
           >
@@ -50,7 +46,11 @@ export default function NavSection() {
           <span className="cursor-pointer" data-tip="2">
             <Heart style={{ color: "black", height: 25, width: "auto" }} />
           </span>
-          <span className="cursor-pointer relative inline-block" data-tip="3">
+          <span
+            onClick={() => navigate("/Ecommerce-project/Cart")}
+            className="cursor-pointer relative inline-block"
+            data-tip="3"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

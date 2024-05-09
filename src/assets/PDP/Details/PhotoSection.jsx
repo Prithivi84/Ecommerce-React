@@ -1,18 +1,91 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Rating from "@mui/material/Rating";
 import { PropTypes } from "prop-types";
+import GlobalApi from "../../../api/GlobalApi";
+import Checkbox from "@mui/material/Checkbox";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import { useNavigate } from "react-router-dom";
 
 export default function PhotoSection(details) {
   console.log(details);
 
+  const navigate = useNavigate();
   const [value, setValue] = React.useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [checked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // const [cartChecked, setCartChecked] = useState(false);
+  const [cart, setCart] = useState();
+  const [cartCaption, setCaption] = useState("Add to Cart");
+
+  const user = JSON.parse(localStorage.getItem("user-info"));
+
+  const data = {
+    userId: user.id,
+    productId: details.details.id,
+  };
+
+  const GetCart = () => {
+    GlobalApi.GetCart(data)
+      .then((res) => {
+        setLoading(false);
+        if (res.carts.length != 0) {
+          for (let i = 0; i < res.carts.length; i++) {
+            if (res.carts[i].products[0].id === data.productId) {
+              setChecked(true);
+              console.log("matchCart");
+              setCaption("Go to Cart");
+              break;
+            }
+          }
+        }
+        console.log(res);
+      })
+      .then(() => {
+        setLoading(true);
+      });
+  };
+
+  const handelCart = (e) => {
+    console.log(e.checked);
+    const a = !e.checked;
+    setChecked(a);
+    if (a == true) {
+      console.log("checked");
+      setCaption("Go to Cart");
+      GlobalApi.createCart(data).then((res) => {
+        console.log("cart", res);
+        console.log(data.userId, " ", data.productId);
+      });
+    }
+    if (a == false) {
+      console.log("not checked");
+      navigate("/Ecommerce-project/Cart");
+      // setCaption("Add to Cart");
+      // if (cart.length != 0) {
+      //   GlobalApi.deleteCart(cart).then((res) => {
+      //     console.log("delete", res);
+      //   });
+      //   console.log(cart);
+      // }
+    }
+  };
+
+  useEffect(() => {
+    console.log("product ", details.details.id);
+    GetCart();
+    console.log(data.productId);
+  }, []);
 
   return (
     <div className="flex relative gap-8">
-      <div className="absolute w-[50rem] h-[50rem] top-[-250px] left-[-300px] rounded-full blur bg-[#7cb1ff] z-[-1]"></div>
+      {/* <div className="absolute w-[50rem] h-[50rem] top-[-250px] left-[-300px] rounded-full blur bg-[#7cb1ff] z-[-1]"></div> */}
       <div>
-        <div className="w-[32rem] h-[32rem]  bg-slate-800">
+        <div
+          style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}
+          className="w-[32rem] flex justify-center items-center h-[32rem]  bg-white"
+        >
           <img
             className="p-4 h-full"
             src={details.details.productImage.url}
@@ -20,31 +93,31 @@ export default function PhotoSection(details) {
           />
         </div>
         <div className="flex gap-4 m-4">
-          <div className="w-24 h-24 bg-slate-700">
+          <div className="w-24 h-24 ">
             <img
               className="p-1"
-              src="https://s3no.cashify.in/cashify/store/product//1ba261f58c70406c9c80aa8f4b744bed.jpeg?p=default&s=lg"
+              src={details.details.productImage.url}
               alt=""
             />
           </div>
-          <div className="w-24 h-24 bg-slate-700">
+          <div className="w-24 h-24 ">
             <img
               className="p-1"
-              src="https://s3no.cashify.in/cashify/store/product//1ba261f58c70406c9c80aa8f4b744bed.jpeg?p=default&s=lg"
+              src={details.details.productImage.url}
               alt=""
             />
           </div>
-          <div className="w-24 h-24 bg-slate-700">
+          <div className="w-24 h-24">
             <img
               className="p-1"
-              src="https://s3no.cashify.in/cashify/store/product//1ba261f58c70406c9c80aa8f4b744bed.jpeg?p=default&s=lg"
+              src={details.details.productImage.url}
               alt=""
             />
           </div>
-          <div className="w-24 h-24 bg-slate-700">
+          <div className="w-24 h-24">
             <img
-              className="p-1"
-              src="https://s3no.cashify.in/cashify/store/product//1ba261f58c70406c9c80aa8f4b744bed.jpeg?p=default&s=lg"
+              className="p-1 "
+              src={details.details.productImage.url}
               alt=""
             />
           </div>
@@ -69,7 +142,7 @@ export default function PhotoSection(details) {
           </span>
         </div>
         <span className="text-4xl font-bold mt-4">
-          $ {details.details.price}
+          ₹ {details.details.price}
         </span>
         <div className="flex gap-16 mt-8">
           <span>color:</span>
@@ -102,8 +175,11 @@ export default function PhotoSection(details) {
           </button>
         </div>
         <div className="my-2">
-          <button className="py-4 px-12 font-semibold text-white bg-[#4995ff]">
-            Add To Cart
+          <button
+            onClick={() => handelCart({ checked })}
+            className="py-4 px-12 font-semibold text-white bg-[#4995ff]"
+          >
+            {cartCaption}
           </button>
         </div>
       </div>

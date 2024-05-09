@@ -17,9 +17,12 @@ export default function CategorySection() {
     });
   };
 
+  const keyword = "";
+
   return (
     <>
       <div>
+        <h2 className="text-3xl font-bold mx-12">Category</h2>
         <div
           className="mainCard"
           style={{
@@ -35,7 +38,7 @@ export default function CategorySection() {
               key={i.id}
               className="group hover:bg-blue-600 w-80"
               onClick={() => {
-                navigate("./Products", { state: i });
+                navigate("./Products", { state: i, keyword: keyword });
               }}
               style={{
                 transition: "0.3s",

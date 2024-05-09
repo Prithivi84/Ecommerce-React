@@ -5,12 +5,15 @@ import DescrptionSection from "./Details/DescrptionSection";
 import MainFooter from "../Footer/MainFooter";
 import PropTypes from "prop-types";
 import { useLocation } from "react-router-dom";
+import ExtraProduct from "./ExtraProduct/ExtraProduct";
+import CommentSection from "./Details/CommentSection";
 
 export default function PdpSection() {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("pdp", location.state.id);
+    window.scrollTo(0, 0);
+    console.log("pdp", location.state.brandName);
   }, []);
 
   return (
@@ -21,6 +24,8 @@ export default function PdpSection() {
         <hr className="w-full my-8" />
         <DescrptionSection desc={location.state.description} />
       </div>
+      <CommentSection />
+      <ExtraProduct brandName={location.state.category.name} />
       <MainFooter />
     </div>
   );

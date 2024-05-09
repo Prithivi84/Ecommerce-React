@@ -13,7 +13,7 @@ const GetCategory = async () => {
     }
   `;
   const results = await request(
-    "https://api-ap-south-1.hygraph.com/v2/clsyjjhz800uy07we1tz15xu3/master",
+    "https://ap-south-1.cdn.hygraph.com/content/clsyjjhz800uy07we1tz15xu3/master",
     query
   );
 
@@ -32,7 +32,7 @@ const GetItems = async () => {
     }
   `;
   const results = await request(
-    "https://api-ap-south-1.hygraph.com/v2/clsyjjhz800uy07we1tz15xu3/master",
+    "https://ap-south-1.cdn.hygraph.com/content/clsyjjhz800uy07we1tz15xu3/master",
     query
   );
 
@@ -68,7 +68,7 @@ const GetProducts = async (search_item, category) => {
     }
   `;
   const results = await request(
-    "https://api-ap-south-1.hygraph.com/v2/clsyjjhz800uy07we1tz15xu3/master",
+    "https://ap-south-1.cdn.hygraph.com/content/clsyjjhz800uy07we1tz15xu3/master",
     query
   );
   return results;
@@ -132,8 +132,26 @@ const getBooking = async (data) => {
 const createCart = async (data) => {
   const query = gql`
     mutation CreateCart {
-      createCart(data: { userId: ${data.userId}, products: { connect: { id: "${data.productId}" } } }) {
+      createCart(data: { userId: ${data.userId}, products: { connect: { id: "${data.productId}" } }, quantity: 1 }) {
         id
+      }
+      publishManyCarts(to: PUBLISHED) {
+        count
+      }
+    }
+  `;
+  const results = await request(
+    "https://api-ap-south-1.hygraph.com/v2/clsyjjhz800uy07we1tz15xu3/master",
+    query
+  );
+  return results;
+};
+
+const updateCart = async (id, quantity) => {
+  const query = gql`
+    mutation UpdateCart {
+      updateManyCarts(data: { quantity: ${quantity} }, where: { id: "${id}" }) {
+        count
       }
       publishManyCarts(to: PUBLISHED) {
         count
@@ -182,11 +200,157 @@ const GetCart = async (data) => {
           }
         }
         id
+        quantity
       }
     }
   `;
   const results = await request(
     "https://ap-south-1.cdn.hygraph.com/content/clsyjjhz800uy07we1tz15xu3/master",
+    query
+  );
+  return results;
+};
+
+const RequestModify = async (data) => {
+  const query = gql`
+    mutation RequestModify {
+      createModify(
+        data: {
+          userId: ${data.userid},
+          modifystatus: Requested,
+          modifyImage: "${data.image}",
+          city: "${data.city}",
+          country: "${data.country}",
+          email: "${data.email}",
+          phone: "${data.phone}",
+          productChange: "${data.productChangeDetail}",
+          productDetails: "${data.productDetail}",
+          productName: "${data.productName}",
+          purchasDate: "${data.purchaseDate}",
+          zipcode: "${data.pin}",
+          state: "${data.state}",
+          modifyDesc: ""
+        }
+      ) {
+        id
+      }
+      publishManyModifies(to: PUBLISHED) {
+        count
+      }
+    }
+  `;
+  const results = await request(
+    "https://api-ap-south-1.hygraph.com/v2/clsyjjhz800uy07we1tz15xu3/master",
+    query
+  );
+  return results;
+};
+
+const getModify = async (data) => {
+  const query = gql`
+    query GetModify {
+      modifies(where: { userId: ${data} }) {
+        id
+        modifyDesc
+        modifystatus
+        updatedAt
+        createdAt
+      }
+    }
+  `;
+  const results = await request(
+    "https://ap-south-1.cdn.hygraph.com/content/clsyjjhz800uy07we1tz15xu3/master",
+    query
+  );
+  return results;
+};
+const GetOrder = async (data) => {
+  const query = gql`
+    query GetOrder {
+      orders(where: { userId: ${data.userId} }, orderBy: createdAt_DESC) {
+        address
+        createdAt
+        id
+        name
+        orderstatus
+        paymentMod
+        phone
+        pin
+        products {
+          name
+          id
+          productImage {
+            url
+          }
+          tag
+          brandName
+        }
+        quantity
+        totalPrice
+        userId
+        updatedAt
+      }
+    }
+  `;
+  const results = await request(
+    "https://ap-south-1.cdn.hygraph.com/content/clsyjjhz800uy07we1tz15xu3/master",
+    query
+  );
+  return results;
+};
+const GetProductShow = async () => {
+  const query = gql`
+    query GetProductShow {
+      products(last: 4) {
+        id
+        name
+        price
+        productImage {
+          url
+        }
+        tag
+        description
+        brandName
+        category {
+          name
+        }
+      }
+    }
+  `;
+  const results = await request(
+    "https://ap-south-1.cdn.hygraph.com/content/clsyjjhz800uy07we1tz15xu3/master",
+    query
+  );
+  return results;
+};
+
+const createOrder = async (data) => {
+  const query = gql`
+    mutation CreateOrder {
+      createOrder(
+        data: {
+          paymentId: "${data.paymentId}"
+          paymentMod: "${data.paymentMod}"
+          phone: ${data.phone}
+          pin: ${data.pin}
+          address: "${data.address}"
+          userId: ${data.userId}
+          products: { connect: { id: "${data.productId}" } }
+          name: "${data.name}"
+          quantity: ${data.quantity}
+          orderstatus: OrderRequested
+          totalPrice: ${data.price}
+        }
+      ) {
+        id
+      }
+      publishManyOrders(to: PUBLISHED) {
+        count
+      }
+    }
+  `;
+  const results = await request(
+    "https://api-ap-south-1.hygraph.com/v2/clsyjjhz800uy07we1tz15xu3/master",
     query
   );
   return results;
@@ -202,4 +366,10 @@ export default {
   createCart,
   deleteCart,
   GetCart,
+  updateCart,
+  RequestModify,
+  getModify,
+  createOrder,
+  GetOrder,
+  GetProductShow,
 };

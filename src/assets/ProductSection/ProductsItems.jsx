@@ -11,14 +11,21 @@ export default function ProductsItems() {
   const location = useLocation();
 
   useEffect(() => {
-    console.log(location.state);
+    console.log("category", location.state.name);
+    console.log("key", location.state.keyword);
   }, []);
   return (
     <>
       <NavSection />
       <div className="flex">
-        <FilterSection />
-        <Product category={location.state.name} />
+        <FilterSection
+          keyword={location.state.keyword}
+          category={location.state.name}
+        />
+        <Product
+          keyword={location.state.keyword}
+          category={location.state.name}
+        />
       </div>
     </>
   );
