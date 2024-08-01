@@ -61,16 +61,16 @@ export default function UploadProduct() {
   //   }
   // },[data])
 
-  const handleUpload = () => {
-    inputRef.current.click();
-  };
+  // const handleUpload = () => {
+  //   inputRef.current.click();
+  // };
 
-  const handleFile = (e) => {
-    const file = e.target.files[0];
-    console.log(file);
-    setImage(URL.createObjectURL(file));
-    console.log(URL.createObjectURL(file));
-  };
+  // const handleFile = (e) => {
+  //   const file = e.target.files[0];
+  //   console.log(file);
+  //   setImage(URL.createObjectURL(file));
+  //   console.log(URL.createObjectURL(file));
+  // };
 
   const userid = JSON.parse(localStorage.getItem("user-info")).id;
   // const data = {
